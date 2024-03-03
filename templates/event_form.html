@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Event{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-image: none;
+    }
+    .card {
+      background-color: #f8f9fa;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 50%; /* Adjust the width as needed */
+      margin: auto;
+      margin-top: 2em;
+    }
+
+    .card * {
+      box-sizing: border-box;
+    }
+
+    .card label {
+      font-size: 1em;
+      margin-bottom: 5px;
+      color: #495057;
+    }
+
+    .card input,
+    .card select {
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      font-size: 0.9em;
+      padding: 0.5em;
+      width: 100%; /* Make input fields take full width */
+    }
+
+    .card button {
+      padding: 10px;
+      border-radius: 5px;
+      background: #007bff;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .card button:hover {
+      background: #0056b3;
+    }
+  </style>
+
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card">
+      <form method="post" enctype="multipart/form-data" action="{% url 'crevent' %}">
+        {% csrf_token %}
+        
+        <label for="event_name">Event Name</label> 
+        <input type="text" name="event_name" required placeholder="Event Name">
+    
+        <label for="host_country">Host Country</label> 
+        <input type="text" name="host_country" required placeholder="Host Country">
+    
+        <label for="start_date">Start Date</label> 
+        <input type="date" name="start_date" required>
+    
+        <label for="end_date">End Date</label> 
+        <input type="date" name="end_date" required>
+    
+        <label for="govt_order">Government Order</label> 
+        <input type="text" name="govt_order" required placeholder="Government Order">
+    
+        <label for="govt_order_upload">Government Order File</label>
+        <input type="file" name="govt_order_upload" accept=".pdf, .doc, .docx">
+    
+        <button type="submit">Create Event</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,8 +1,21 @@
 from django.urls import path
-from. import views 
+from .import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('section/', views.sections, name='section'),
+    path('armytrg/', views.armytrg, name='armytrg'),
+    path('crevent/', views.create_event, name='crevent'),
+    path('crparticipant/', views.create_participant, name='crparticipant'),
+    path('participantevent/', views.participant_event, name='participantevent'),
+    path('participantview/', views.participant_view, name='participantview'),
+    path('crcourseoffer/', views.creat_course_offer, name='crcourseoffer'),
+    path('cwisecourseoffer/', views.coffer_by_country, name='cwisecourseoffer'),
+    path('codbysvc/', views.codby_services, name='codbysvc'),
     
 ]
- 
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

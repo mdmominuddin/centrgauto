@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+    body {
+        background-color: #f4f4f4;
+        color: #333;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    table {
+        width: 100%;
+        font-size:0.9em;
+    }
+
+    thead {
+        background-color: #a0a2a3;
+        color: #fff;
+    }
+
+    tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .footer {
+        background-color: #688eab;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .footer p {
+        margin: 0;
+    }
+
+    .header {
+        height: 25vh;
+        background-color: #090a09;
+        padding: 3em;
+        width: 100%;
+        position:relative;
+        
+    }
+    .filters {
+        height:15vh;
+        padding: 3em;
+        width:80%;
+        
+
+        
+    }
+
+    .gray-bold-text {
+        color: #a0a2a3; /* Light gray color */
+        font-weight: bold;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="col-md-12 main-content">
+        <div class="col-md-10 header mb-4 mt-0">
+            <h1 class="gray-bold-text text-center  text-uppercase">foreign courses/Trg </h1>
+        
+            <div class="filters bg-light text-center mx-auto shadow ">
+                <label for="rankFilterInGo">Rank:</label>
+                <select id="rankFilterInGo">
+                    <option value="">All Ranks</option>
+                    {% for data in combined_data %}
+                        <option value="{{ data.participant_rank }}">{{ data.participant_rank }}</option>
+                    {% endfor %}
+                </select>
+            
+                <label for="startDateFilter" class="ml-3">Start Date:</label>
+                <input type="date" id="startDateFilterInGo" placeholder="Start Date">
+                
+                <label for="endDateFilter" class="ml-3">End Date:</label>
+                <input type="date" id="endDateFilterInGo" placeholder="End Date">
+            
+                <button onclick="applyFilters()">Apply Filters</button>
+                <button onclick="resetFilters()">Reset Filters</button>
+            </div>
+        </div>
+        <div class="col-md-10 mx-auto mt-5 bg-light shadow ">
+            <table id="tableGoWithParticipants" class=" mt-4 table table-bordered table-striped mx-auto">
+                <thead>
+                    <tr>
+                        <th>Service Number</th>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Event Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Total Days</th>
+                        <th>Govt Numbers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in combined_data %}
+                        <tr>
+                            <td>{{ data.participant_service_number }}</td>
+                            <td>{{ data.participant_rank }}</td>
+                            <td>{{ data.participant_name }}</td>
+                            <td>{{ data.event_name }}</td>
+                            <td>{{ data.event_start_date }}</td>
+                            <td>{{ data.event_end_date }}</td>
+                            <td>{{ data.event_total_days }}</td>
+                            <td>{{ data.event_govt_order }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 col-md-10 mx-auto shadow">
+        <div class="row p-2 d-flex">
+            <div class="col-md-5" style="height: 400px; padding: 15px; margin-right: 0px;">
+                <h5>Total Participants: {{ total_participants }}</h5>
+                <hr>
+                {% for rank_count in rank_counts %}
+                    <h6>{{ rank_count.rank }} - {{ rank_count.count }}</h6>
+                {% endfor %}
+            </div>
+            <div id="chartContainerForRWP" class="col-md-7" style="height: 400px; margin-left: 0px; "></div>
+        </div>
+    </div>
+    
+    
+    
+    
+
+    
+
+    <div class="">
+        <a href="{% url 'armytrg'%}">back</a>
+        <a href="{% url 'armytrg'%}">print</a>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="col-12">
+        <p> @ Warrant Officer Momin </p>
+    </div>
+</footer>
+
+<script>
+    // Move this script inside your Django template
+    function applyFilters() {
+        var rankFilterInGo = document.getElementById('rankFilterInGo').value;
+        var startDateFilterInGo = document.getElementById('startDateFilterInGo').value;
+        var endDateFilterInGo = document.getElementById('endDateFilterInGo').value;
+
+        var rows = document.querySelectorAll('#tableGoWithParticipants tbody tr');
+
+        rows.forEach(function (row) {
+            var rank = row.querySelector('td:nth-child(2)').innerText;
+            var startDate = new Date(row.querySelector('td:nth-child(5)').innerText);
+            
+            var showRow = (rankFilterInGo === '' || rank === rankFilterInGo) &&
+                          (startDateFilterInGo === '' || startDate >= new Date(startDateFilterInGo)) &&
+                          (endDateFilterInGo === '' || startDate <= new Date(endDateFilterInGo));
+
+            row.style.display = showRow ? '' : 'none';
+        });
+    }
+
+    function resetFilters() {
+        document.getElementById('rankFilterInGo').value = '';
+        document.getElementById('startDateFilterInGo').value = '';
+        document.getElementById('endDateFilterInGo').value = '';
+
+        var rows = document.querySelectorAll('#tableGoWithParticipants tbody tr');
+        rows.forEach(function (row) {
+            row.style.display = '';
+        });
+    }
+
+    function updateChart() {
+        // Fetch combined_data from Django template
+        var allData = [
+            {% for data in combined_data %}
+                {
+                    'participant_service_number': '{{ data.participant_service_number }}',
+                    'participant_rank': '{{ data.participant_rank }}',
+                    'participant_name': '{{ data.participant_name }}',
+                    'event_name': '{{ data.event_name }}',
+                    'event_start_date': '{{ data.event_start_date }}',
+                    'event_end_date': '{{ data.event_end_date }}',
+                    'event_total_days': '{{ data.event_total_days }}',
+                    'event_govt_order': '{{ data.event_govt_order }}',
+                },
+            {% endfor %}
+        ];
+
+        var ranks = {};
+        var colors = [];  // Array to store colors
+
+        allData.forEach(function(data) {
+            var rank = data.participant_rank;
+            if (ranks[rank]) {
+                ranks[rank]++;
+            } else {
+                ranks[rank] = 1;
+                // Assign a different color to each bar
+                colors.push(getRandomColor());
+            }
+        });
+
+        var chartData = [{
+            x: Object.keys(ranks),
+            y: Object.values(ranks),
+            type: 'bar',
+            marker: {
+                color: colors,
+            },
+        }];
+
+        var layout = {
+            title: 'Participants by Ranks',
+            xaxis: {
+                title: 'Rank',
+            },
+            yaxis: {
+                title: 'Count',
+            },
+        };
+
+        Plotly.newPlot('chartContainerForRWP', chartData, layout);
+    }
+
+    // Initial chart with all data
+    updateChart();
+
+    // Function to generate a random color
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
+
+{% endblock %}
+

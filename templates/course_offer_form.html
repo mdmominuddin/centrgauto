@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Add this CSS to your existing styles or a separate stylesheet */
+    .form-control {
+        width: 100%;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center">
+        <!-- Main Content -->
+        <div class="col-md-6">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h1 class="text-center mb-4">Add Course Offer</h1>
+
+                    <!-- Add Course Offer Form -->
+                    <form method="post" action="{% url 'crcourseoffer' %}">
+                        {% csrf_token %}
+
+                        <!-- Display form errors if any -->
+                        {% if form.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ form.errors }}
+                            </div>
+                        {% endif %}
+
+                        <!-- Render form fields -->
+                        <div class="mb-3">
+                            <label for="{{ form.ff_country.id_for_label }}">Foreign Country</label>
+                            {{ form.ff_country }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.course_name.id_for_label }}">Course Name</label>
+                            {{ form.course_name }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.vac_offered.id_for_label }}">Vacancies Offered</label>
+                            {{ form.vacancies_offered }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.year.id_for_label }}">Year</label>
+                            {{ form.year }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.vacancies_accepted_army.id_for_label }}">Vacancies Accepted (Army)</label>
+                            {{ form.vacancies_accepted_army }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.vacancies_accepted_navy.id_for_label }}">Vacancies Accepted (Navy)</label>
+                            {{ form.vacancies_accepted_navy }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.vacancies_accepted_air.id_for_label }}">Vacancies Accepted (Air)</label>
+                            {{ form.vacancies_accepted_air }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.fin_offer.id_for_label }}">Financial Offer</label>
+                            {{ form.fin_offer }}
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

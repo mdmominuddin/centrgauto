@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load static %}
+    <style>
+        body {
+            background-image: none;
+            background-size: auto;
+            color: #fff;
+            padding-top: 20px;
+            margin: 0;
+            overflow: scroll;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .sidebar {
+            padding: 20px;
+            border-radius: 5px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar h5 {
+            color: #fff;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 0;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057 !important;
+        }
+
+        .main-content {
+            padding: 20px;
+            background-color: #f8f9fa; /* Light background color for main content */
+        }
+
+        .card {
+            border: none; /* Remove card border */
+        }
+
+        .card-title {
+            color: #495057; /* Dark text color for card title */
+        }
+
+        .vacancies-chart {
+            margin-top: 20px;
+        }
+
+        .summary-table,
+        .govt-order-table {
+            margin-top: 20px;
+        }
+
+        footer {
+            margin-top: 20px;
+            background-color: #f8f9fa; /* Light background color for footer */
+        }
+
+        footer p,
+        footer img {
+            margin: 10px;
+        }
+        /* Summary Table */
+        .summary-table {
+            width: 100%;
+            font-size:13px;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        /* Govt Order Table */
+        .govt-order-table {
+            width: 100%;
+            font-size:13px;
+        }
+
+        .govt-order-table th,
+        .govt-order-table td {
+            text-align: left;
+            vertical-align: middle;
+        }
+        #courseTable_wrapper,
+        #myTable_wrapper {
+            padding: 20px;
+            background-color: #f8f9fa; /* Match the background color of the main content */
+        }
+        #courseTable thead th,
+        #myTable thead th {
+            background-color: #343a40; /* Match the background color of your table header */
+            color: #fff; /* Match the text color of your table header */
+            border: none; /* Remove default borders */
+        }
+        #courseTable tbody td,
+        #myTable tbody td {
+            border-bottom: 1px solid #dee2e6; /* Match the border color of your table rows */
+        }
+    </style>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar bg-dark text-light p-4">
+                <a href="{% url 'crevent' %}" class="nav-link text-light bg-dark p-2 rounded mb-1">Add Event</a>
+                <a href="{% url 'crparticipant' %}" class="nav-link text-light bg-dark p-2 rounded mb-1">Add Participants</a>
+                <a href="{% url 'crcourseoffer' %}" class="nav-link text-light bg-dark p-2 rounded mb-1">Add Course Offer</a>
+                
+                <a href="{% url 'cwisecourseoffer' %}" class="nav-link text-light bg-dark p-2 rounded mb-1">Cournty_Wise Offer</a>
+                
+                <a href="{% url 'participantevent' %}" class="nav-link text-light bg-dark p-2 rounded mb-1">Participants with event</a>
+                <a href="{% url 'participantview' %}" class="nav-link text-light bg-dark p-2 rounded mb-1">Govt_Order</a>
+            </div>
+
+            <!-- Main Content -->
+            
+                <div id="coa" class="col-md-10 offset-md-2 main-content ">
+                    <div class="row d-flex align-items-center">
+                        <h2 class="mt-3 text-muted text-center p-2 rounded text-uppercase shadow">All Course Offer</h2>
+
+                        <div class="col-md-5">
+                            <div class="card mt-4 h-100">
+                                <div class="card-body">
+                                    <p class="card-text text-secondary">Total Vacancies Offered: {{ total_offered }}</p>
+                                    <p class="card-text text-secondary">Total Vacancies Accepted: {{ total_accepted }}</p>
+                                    <p class="card-text text-secondary">Total Vacancies Regretted: {{ total_regretted }}</p>
+                                    <p class="card-text text-secondary">Percentage of Vacancies Accepted: {{ percentage_accepted|floatformat:2 }}%</p>
+                                    <p class="card-text text-secondary">Percentage of Vacancies Regretted: {{ percentage_regretted|floatformat:2 }}%</p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Right Section -->
+                        <div class="col-md-5">
+                            <div class="vacancies-chart bg-dark">
+                                <div id="vacanciesPlotlyChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3 p-2">
+                        <div class="col-md-12 text-left bordered-top">
+                            <a href="{% url "section" %}" class="mx-1">back</a>
+                            <a href="#" class="mx-1">print</a>
+                            <a href="#" class="mx-1">export</a>
+                        </div>
+                    </div>
+                    
+            </div>
+
+            
+
+
+            <!-- Course Offers Summary Table -->
+            <div class="col-md-10 offset-md-2 main-content">
+                <h3 class="mt-3 text-muted text-center p-2 rounded text-uppercase shadow "> All Course Offer List</h3>
+                
+                <table id="courseTable" class="table table-bordered table-striped bg-light summary-table">
+                    <thead class="dark">
+                        <tr>
+                            <th>Country</th>
+                            <th>Course Name</th>
+                            <th>Vacancies Offered</th>
+                            <th>Trg Year</th>
+                            <th>Vac_Army</th>
+                            <th>Vac_Navy</th>
+                            <th>Vac_Air</th>
+                            <th>Vac_Regretted</th>
+                            <th>Financial Offer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for courseoffer in courseoffers %}
+                            <tr>
+                                <td>{{ courseoffer.ff_country }}</td>
+                                <td>{{ courseoffer.course_name }}</td>
+                                <td>{{ courseoffer.vacancies_offered }}</td>
+                                <td>{{ courseoffer.year }}</td>
+                                <td>{{ courseoffer.vacancies_accepted_army }}</td>
+                                <td>{{ courseoffer.vacancies_accepted_navy }}</td>
+                                <td>{{ courseoffer.vacancies_accepted_air }}</td>
+                                <td>{{ courseoffer.vacancies_regretted }}</td>
+                                <td>{{ courseoffer.fin_offer }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                    <a href="#">back</a>
+                    <a href="#">print</a>
+                    <a href="#">export</a>
+                
+            </div>
+
+            <!-- Govt Order Table -->
+            <div class="col-md-10 offset-md-2 main-content">
+                <h3 class="mt-3 text-muted text-center p-2 rounded text-uppercase shadow">States of Government Order</h3>
+                
+                <table id="myTable" class="table table-bordered table-striped bg-light govt-order-table">
+                    <thead class="dark">
+                        <tr>
+                            <th>Event</th>
+                            <th>Country</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Total Days</th>
+                            <th>GO Number</th>
+                            <th>GO Ltr</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for go in godata %}
+                            <tr>
+                                <td>{{ go.event_name }}</td>
+                                <td>{{ go.host_country }}</td>
+                                <td>{{ go.start_date }}</td>
+                                <td>{{ go.end_date }}</td>
+                                <td>{{ go.total_days }}</td>
+                                <td>{{ go.govt_order }}</td>
+                                <td>
+                                    {% if go.govt_order_upload %}
+                                        <a href="{{ go.govt_order_upload.url }}" target="_blank">View GO</a>
+                                    {% else %}
+                                        No File Uploaded
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="row mt-3 p-2">
+                    <div class="col-md-12 text-left bordered-top">
+                        <a href="#" class="mx-1">back</a>
+                        <a href="#" class="mx-1">print</a>
+                        <a href="#" class="mx-1">export</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-5"></div>
+    <footer>
+        <div class="row">
+            <div class="col-md-10 offset-2 bg-success">
+                <p class="text-light text-center"> @ Warrant Officer Momin </p>
+            </div>
+            <div class="col-6 text-center">
+                
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+            $('#courseTable').DataTable();
+        });
+    </script>
+
+    <script>
+        var totalOffered = {{ total_offered }};
+        var totalAccepted = {{ total_accepted }};
+        var totalRegretted = {{ total_regretted }};
+
+        var data = [{
+            x: ['Total Offered', 'Total Accepted', 'Total Regretted'],
+            y: [totalOffered, totalAccepted, totalRegretted],
+            type: 'bar',
+            marker: {
+                color: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(255, 206, 86, 0.6)']
+            }
+        }];
+
+        var layout = {
+            title: 'Total Vacancies Analysis',
+            xaxis: {
+                title: 'Vacancy Type'
+            },
+            yaxis: {
+                title: 'Number of Vacancies'
+            }
+        };
+
+        Plotly.newPlot('vacanciesPlotlyChart', data, layout);
+
+    </script>
+    
+
+    
+
+
+{% endblock %}

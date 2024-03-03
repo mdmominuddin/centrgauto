@@ -1,0 +1,91 @@
+{% extends 'base.html' %} {
+
+{% block content %}
+<style>
+.custom-card-img {
+	height: 135px;
+	object-fit: cover;
+}
+
+.custom-card {
+	background-color: #2c1c08;
+	border: 1px solid #aaa;
+	
+	border-radius: 10px;
+	overflow: hidden;
+	transition: transform 0.3s ease-in-out;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+.custom-card:hover {
+	transform: scale(1.05);
+	box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
+}
+
+.card-title {
+	color: #fff;
+	font-weight: bold;
+	font-size: 1.2rem;
+	background-color: #1a2509;
+	border-radius: 10px; 
+	padding: 8px;
+	margin-bottom: 0;
+}
+
+
+.card-text {
+	color: #666;
+	font-size: 0.9rem;
+}
+
+.card-body {
+	background-color: #555035;
+}
+
+a {
+	text-decoration: none;
+}
+
+.bi {
+	font-size: 2rem;
+
+	color: white;
+	/* Dark color for icons */
+	padding: 15px;
+	/* Adjust padding for better appearance */
+
+
+	background-color: #6e0202;
+
+	transition: background-color 0.3s ease-in-out;
+
+}
+
+.custom-card:hover .bi {
+	background-color: #555;
+	/* Darker background on hover */
+}
+</style>
+<div class="container my-5">
+    <div class="row">
+        
+            <div class="col-md-4 mb-4">
+                <a href="{% url 'armytrg' %}">
+                    <div class="card h-100 custom-card text-center mt-1">
+                    	<i class="bi bi-crosshair"></i>
+                        	<div class="card-body">
+								<h5 class="card-title"> Army Trg Section </h5>
+								<p class="pt-3"> <b> - - - </b></p>
+								<p class="card-text text-info text-bordered">
+									This section deals with training policy, training, foreign training, and visits of {{ section_name }} of Bangladesh Armed Forces.
+								</p>
+                        	</div>
+                    </div>
+                </a>
+            </div>
+
+			
+        
+    </div>
+</div>
+{% endblock %}
