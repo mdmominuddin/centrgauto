@@ -13,7 +13,7 @@ def home(request):
         correct_password = "998877113355"
 
         if entered_password == correct_password:
-            return redirect('section')
+            return redirect('armytrg')
 
         else:
             return render(request, 'home.html', {'message': 'Incorrect password. Please try again.'})
@@ -22,11 +22,6 @@ def home(request):
 
 
 
-
-def sections(request):
-    Section_list = ['HQ Trg Dte', 'Army Trg', 'Navy Trg', 'Air Trg', 'Joint Trg', 'Jt College']
-
-    return render(request, 'sections.html', {'Section_list': Section_list})
 
 
 def armytrg(request):
