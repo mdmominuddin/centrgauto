@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-from . models import Event, Participant, ParticipantEvent, CourseOffer, OfficersandStaffs
-from .forms import EventForm, ParticipantForm, ParticipantEventForm, CourseOfferForm, OfficersandStaffsForm
+from . models import Event, Participant, ParticipantEvent, CourseOffer, OfficersandStaffs, upEvent
+from .forms import EventForm, ParticipantForm, ParticipantEventForm, CourseOfferForm, OfficersandStaffsForm, upEventForm
 from django.db.models import F, ExpressionWrapper, fields
 from django.core.serializers import serialize
 from django.db.models import Count
 import datetime
+from django.utils import timezone
+
 
 def home(request):
     if request.method == 'POST':
@@ -303,3 +305,41 @@ def disofficersandstaffs(request):
     commissioned_officers = officers_and_staffs.filter(staffstatus='commissioned_officer')
     other_staffs = officers_and_staffs.exclude(staffstatus='commissioned_officer')
     return render(request, 'disofficersandstaffs.html', {'commissioned_officers': commissioned_officers, 'other_staffs': other_staffs})
+
+
+def event_list(request):
+    if request.method == 'POST':
+        event_id = request.POST.get('event_id')
+        if event_id:
+            event = get_object_or_404(upEvent, pk=event_id)
+            event.delete()
+            return redirect('disevent')
+
+    current_date = timezone.now().date()
+    upcoming_events = upEvent.objects.filter(date__gte=current_date).order_by('date', 'start_time')
+    completed_events = upEvent.objects.filter(date__lt=current_date).order_by('-date', '-start_time')
+    
+    return render(request, 'events.html', {'upcoming_events': upcoming_events, 'completed_events': completed_events})
+
+def create_event(request, event_id=None):
+    if event_id:
+        # Fetch the existing event object if event_id is provided
+        event = get_object_or_404(upEvent, pk=event_id)
+        if request.method == 'POST':
+            form = upEventForm(request.POST, instance=event)
+            if form.is_valid():
+                form.save()
+                return redirect('disevent')
+        else:
+            form = upEventForm(instance=event)
+    else:
+        # If event_id is not provided, create a new event object
+        if request.method == 'POST':
+            form = upEventForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('disevent')
+        else:
+            form = upEventForm()
+    
+    return render(request, 'create_event.html', {'form': form})

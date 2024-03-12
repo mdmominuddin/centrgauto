@@ -15,6 +15,8 @@ urlpatterns = [
     path('codbysvc/', views.codby_services, name='codbysvc'),
     path('crofficersandstaffs/', views.crofficersandstaffs, name='crofficersandstaffs'),
     path('disofficersandstaffs/', views.disofficersandstaffs, name='disofficersandstaffs'),
+    path('creventforcal/', views.create_event, name='creventforcal'),
+    path('disevent/', views.event_list, name='disevent'),
     
 ]
 

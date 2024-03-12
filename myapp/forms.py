@@ -1,5 +1,5 @@
 from django import forms
-from .models import Event, Participant, ParticipantEvent, CourseOffer, OfficersandStaffs
+from .models import Event, Participant, ParticipantEvent, CourseOffer, OfficersandStaffs, upEvent
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -78,4 +78,14 @@ class OfficersandStaffsForm(forms.ModelForm):
             'staffstatus': forms.Select(attrs={'class': 'form-control'}),
             'dateofjoin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'dateofpostedout': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+        
+class upEventForm(forms.ModelForm):
+    class Meta:
+        model = upEvent
+        fields = ['title', 'location', 'date', 'start_time', 'end_time']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'start_time': forms.TimeInput(attrs={'type': 'time'}),
+            'end_time': forms.TimeInput(attrs={'type': 'time'}),
         }
