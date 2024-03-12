@@ -1,5 +1,5 @@
 from django import forms
-from .models import Event, Participant, ParticipantEvent, CourseOffer
+from .models import Event, Participant, ParticipantEvent, CourseOffer, OfficersandStaffs
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -63,3 +63,19 @@ class CourseOfferForm(forms.ModelForm):
         # Add 'form-control' class to each form field
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+
+
+class OfficersandStaffsForm(forms.ModelForm):
+    class Meta:
+        model = OfficersandStaffs
+        fields = '__all__'
+        widgets = {
+            'service_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'rank': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'designation': forms.TextInput(attrs={'class': 'form-control'}),
+            'service': forms.Select(attrs={'class': 'form-control'}),
+            'staffstatus': forms.Select(attrs={'class': 'form-control'}),
+            'dateofjoin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'dateofpostedout': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }

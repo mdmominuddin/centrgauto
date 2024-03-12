@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event, Participant, ParticipantEvent, CourseOffer, Country
+from .models import Event, Participant, ParticipantEvent, CourseOffer, Country, OfficersandStaffs
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('event_name', 'host_country', 'start_date', 'end_date', 'total_days', 'govt_order')
@@ -27,3 +27,8 @@ class CountryAdmin(admin.ModelAdmin):
     list_filter = ('country_class',)
 
 admin.site.register(Country, CountryAdmin)
+
+class OfficersandStaffsAdmin(admin.ModelAdmin):
+    list_display = ('rank','name','designation')
+    search_fields = ('rank','name','designation')
+    list_filter = ('designation','staffstatus')

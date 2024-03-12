@@ -13,6 +13,8 @@ urlpatterns = [
     path('crcourseoffer/', views.creat_course_offer, name='crcourseoffer'),
     path('cwisecourseoffer/', views.coffer_by_country, name='cwisecourseoffer'),
     path('codbysvc/', views.codby_services, name='codbysvc'),
+    path('crofficersandstaffs/', views.crofficersandstaffs, name='crofficersandstaffs'),
+    path('disofficersandstaffs/', views.disofficersandstaffs, name='disofficersandstaffs'),
     
 ]
 

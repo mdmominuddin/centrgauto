@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Officers and Staffs Data{% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        margin-top: 20px;
+    }
+    
+    h2 {
+        text-align: center;
+        margin-top: 20px;
+        color: #333;
+    }
+    
+    .header {
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .commissioned-officers,
+    .other-staffs {
+        margin-bottom: 20px;
+    }
+    
+    .officers-list,
+    .staffs-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    .officer,
+    .staff {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+    }
+    
+    .rank {
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .name {
+        margin-left: 10px;
+        color: #333;
+    }
+    
+    .designation {
+        margin-left: 10px;
+        color: #666;
+    }
+    
+    .afd-service {
+        margin-top: 10px;
+        color: #888;
+    }
+    
+    .short-bio-data {
+        color: #007bff;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    
+    .short-bio-data:hover {
+        color: #0056b3;
+    }
+    
+    .data-entry-button {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="container mt-5 p-3">
+    <div class="header">
+        <h2>Officers and Staffs</h2>
+    </div>
+
+    <div class="commissioned-officers">
+        <h3 class="text-primary mb-4">Commissioned Officers:</h3>
+        <ol class="officers-list">
+            {% for officer_staff in commissioned_officers %}
+            <li class="officer p-3 mb-3 rounded">
+                <div class="officer-details">
+                    <span class="rank">{{ officer_staff.rank|title }}</span>
+                    <span class="name ms-2">{{ officer_staff.name }}</span>
+                    <span class="designation ms-2">{{ officer_staff.designation }}</span>
+                    <a href="#" class="short-bio-data ms-2">Short Bio-data</a>
+                </div>
+                <div class="afd-service mt-2">AFD Service: {{ officer_staff.afdservice_display }}</div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <div class="other-staffs">
+        <h3 class="text-success">Staffs:</h3>
+        <ol class="staffs-list">
+            {% for officer_staff in other_staffs %}
+            <li class="staff p-3 mb-3 rounded">
+                <div class="staff-details">
+                    <span class="rank">{{ officer_staff.rank|title }}</span>
+                    <span class="name ms-2">{{ officer_staff.name }}</span>
+                    <span class="designation ms-2">{{ officer_staff.designation }}</span>
+                    <a href="#" class="short-bio-data ms-2">Short Bio-data</a>
+                </div>
+                <div class="afd-service mt-2">AFD Service: {{ officer_staff.afdservice_display }}</div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <div class="data-entry-button">
+        <a href="{% url 'crofficersandstaffs' %}" class="btn btn-primary">Add New Officers/Staffs</a>
+    </div>
+</div>
+
+<script>
+    alert("Please be noted that the style is not final yet");
+</script>
+
+{% endblock %}

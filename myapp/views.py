@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Sum
-from . models import Event, Participant, ParticipantEvent, CourseOffer
-from .forms import EventForm, ParticipantForm, ParticipantEventForm, CourseOfferForm
+from . models import Event, Participant, ParticipantEvent, CourseOffer, OfficersandStaffs
+from .forms import EventForm, ParticipantForm, ParticipantEventForm, CourseOfferForm, OfficersandStaffsForm
 from django.db.models import F, ExpressionWrapper, fields
 from django.core.serializers import serialize
 from django.db.models import Count
@@ -286,4 +286,20 @@ def codby_services(request):
    
 
 
+#creating officers and staff 
+def crofficersandstaffs(request):
+    if request.method == 'POST':
+        form = OfficersandStaffsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('disofficersandstaffs')  # Redirect to the display view
+    else:
+        form = OfficersandStaffsForm()
+    return render(request, 'crofficersandstaffs.html', {'form': form})
 
+#displaying officers and staffs form
+def disofficersandstaffs(request):
+    officers_and_staffs = OfficersandStaffs.objects.all()
+    commissioned_officers = officers_and_staffs.filter(staffstatus='commissioned_officer')
+    other_staffs = officers_and_staffs.exclude(staffstatus='commissioned_officer')
+    return render(request, 'disofficersandstaffs.html', {'commissioned_officers': commissioned_officers, 'other_staffs': other_staffs})
